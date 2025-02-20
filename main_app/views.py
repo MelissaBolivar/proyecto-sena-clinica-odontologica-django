@@ -21,14 +21,5 @@ def contacto(request):
     
     return render(request, 'contactanos.html', {'form': form})
 
-def login_view(request):
+def login(request):
     return render(request, 'login.html')
-
-def auxadmin_view(request):
-    return render(request, 'auxadmin.html')
-
-def dentista_view(request):
-    return render(request, 'dentista.html')
-
-def paciente_view(request):
-    return render(request, 'paciente.html')
