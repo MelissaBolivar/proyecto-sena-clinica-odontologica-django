@@ -2,10 +2,8 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout, get_user_model
 from django.contrib.auth.decorators import login_required
 from login_app.models import CustomUser
-from django.contrib import messages
 from django.contrib.auth.hashers import make_password
 from .models import CustomUser, Cita
-from .forms import UsuarioForm, CitaForm
 from django.contrib.auth import get_user_model
 from datetime import datetime, timedelta
 from django.db import IntegrityError
@@ -52,7 +50,13 @@ def admin_dashboard(request):
 
 @login_required
 def auxiliar_dashboard(request):
-    return render(request, 'login/auxiliar_dashboard.html')
+    return render(request, 'login/auxiliar_dashboard.html', {'usuario': request.user})
+
+@login_required
+def gestion_pacientes(request):
+    pacientes = CustomUser.objects.filter(role="paciente")  # Solo pacientes
+    return render(request, "funcionalidades/gestion_pacientes.html", {"pacientes": pacientes})
+
 
 @login_required
 def dentista_dashboard(request):
