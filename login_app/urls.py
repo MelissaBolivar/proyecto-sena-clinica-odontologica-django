@@ -1,12 +1,20 @@
 from django.urls import path
-from .views import login_view, logout_view, admin_dashboard, auxiliar_dashboard, dentista_dashboard, paciente_dashboard
+from . import views
 
 urlpatterns = [
-    path("login/", login_view, name="login"),
-    path("logout/", logout_view, name="logout"),
-    path("dashboard/admin/", admin_dashboard, name="admin_dashboard"),
-    path("dashboard/auxiliar/", auxiliar_dashboard, name="auxiliar_dashboard"),
-    path("dashboard/dentista/", dentista_dashboard, name="dentista_dashboard"),
-    path("dashboard/paciente/", paciente_dashboard, name="paciente_dashboard"),
+    path("login/", views.login_view, name="login"),
+    path("logout/", views.logout_view, name="logout"),
+    path("dashboard/admin/", views.admin_dashboard, name="admin_dashboard"),
+    path("dashboard/auxiliar/", views.auxiliar_dashboard, name="auxiliar_dashboard"),
+    path("dashboard/dentista/", views.dentista_dashboard, name="dentista_dashboard"),
+    path("dashboard/paciente/", views.paciente_dashboard, name="paciente_dashboard"),
+    path('gestion-usuarios/', views.gestion_usuarios, name='gestion_usuarios'),
+    path('crear-usuario/', views.crear_usuario, name='crear_usuario'),
+    path('editar-usuario/<int:user_id>/', views.editar_usuario, name="editar_usuario"),
+    path("eliminar-usuario/<int:usuario_id>/", views.eliminar_usuario, name="eliminar_usuario"),
+    path("gestion-citas/", views.gestion_citas, name="gestion_citas"),
+    path("crear-citas/<int:paciente_id>/", views.crear_cita, name="crear_citas"),
+    path("ver_citas_pendientes/<int:paciente_id>/", views.ver_citas_pendientes, name="ver_citas_pendientes"),
+    path("editar_cita/<int:cita_id>/", views.editar_cita, name="editar_cita"),
+    path("eliminar_cita/<int:cita_id>/", views.eliminar_cita, name="eliminar_cita"),
 ]
-

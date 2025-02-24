@@ -1,1 +1,35 @@
-<h1>Hola administrador</h1>
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Estilos personalizados -->
+    <link rel="stylesheet" href="{% static 'dashboard.css' %}">
+</head>
+<body>
+
+    <div class="container">
+        <h1>Hola, bienvenid@ {{ usuario.nombre_completo }}</h1>
+        <p>Rol: {{ usuario.role }}</p>
+
+        <div class="card">
+            <h3>Gestión de Usuarios</h3>
+            <p>Crear, editar y eliminar usuarios del sistema.</p>
+            <a href="{% url 'gestion_usuarios' %}" class="btn btn-primary">Ir a Gestión de Usuarios</a>
+        </div>
+
+        <div class="card">
+            <h3>Gestión de Citas</h3>
+            <p>Ver, ordenar, cancelar y aplazar citas.</p>
+            <a href="{% url 'gestion_citas' %}" class="btn btn-primary">Ir a Gestión de Citas</a>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS (Opcional, solo si usas componentes que lo requieran) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
