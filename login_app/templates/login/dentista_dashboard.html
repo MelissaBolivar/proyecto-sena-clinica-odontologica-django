@@ -1,1 +1,26 @@
 <h1>Hola dentista</h1>
+<button id="logout-btn" class="btn btn-danger">Cerrar Sesión</button>
+
+<form id="logout-form" action="{% url 'logout' %}" method="post" style="display: none;">
+    {% csrf_token %}
+</form>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    document.getElementById("logout-btn").addEventListener("click", function(event) {
+        event.preventDefault();
+        Swal.fire({
+            title: "¿Estás seguro?",
+            text: "Tu sesión se cerrará",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#d33",
+            cancelButtonColor: "#3085d6",
+            confirmButtonText: "Sí, cerrar sesión"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                document.getElementById("logout-form").submit();
+            }
+        });
+    });
+</script>
