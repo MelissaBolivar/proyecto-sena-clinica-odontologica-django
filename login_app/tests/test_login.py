@@ -30,7 +30,7 @@ class LoginTest(StaticLiveServerTestCase):
         password_input.send_keys("123456")
         password_input.send_keys(Keys.RETURN)
 
-        time.sleep(3)  # Espera para la redirección (puedes reducirlo)
+        time.sleep(5)  # Espera para la redirección (puedes reducirlo)
         
         # Imprimir la URL actual después del login
         print(f"URL después del login: {self.driver.current_url}")

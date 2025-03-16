@@ -122,3 +122,5 @@ MESSAGE_TAGS = {
 }
 
 AUTH_USER_MODEL = 'login_app.CustomUser' 
+
+#LOGIN_URL = '/login/'
