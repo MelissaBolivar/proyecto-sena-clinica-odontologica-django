@@ -60,11 +60,11 @@ def gestion_pacientes(request):
 
 @login_required
 def dentista_dashboard(request):
-    return render(request, 'login/dentista_dashboard.html')
+    return render(request, 'login/dentista_dashboard.html', {'usuario': request.user})  
 
 @login_required
 def paciente_dashboard(request):
-    return render(request, 'login/paciente_dashboard.html')
+    return render(request, 'login/paciente_dashboard.html', {'usuario': request.user}) 
 
 def logout_view(request):
     logout(request)
@@ -180,6 +180,27 @@ def gestion_citas(request):
         'pacientes': pacientes,
         'citas_pendientes': citas_pendientes
     })
+    
+ #agenda de citas
+@login_required
+def agenda_citas(request):
+    usuario_id = request.user.nombre_completo  # Obtiene el ID del usuario autenticado
+    print(f"ID del usuario autenticado: {usuario_id}")
+    dentista = CustomUser.objects.filter(nombre_completo=usuario_id).first()
+   
+    citas_pendientes_dentista = Cita.objects.filter(dentista=dentista, estado="pendiente")
+ 
+    for cita in citas_pendientes_dentista:  # Itera directamente sobre el QuerySet
+        print(f"{cita.paciente.nombre_completo} - {cita.fecha} {cita.hora} - {cita.motivo}")
+ 
+            
+    return render(request, 'funcionalidades/agenda_citas.html', {
+       # 'pacientes': pacientes,
+        # 'citas_pendientes': citas_pendientes,
+        'citas_pendientes_dentista': citas_pendientes_dentista
+    })
+             
+       
 
 @login_required
 def crear_cita(request, paciente_id):
