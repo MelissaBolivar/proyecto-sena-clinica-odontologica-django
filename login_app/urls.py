@@ -19,4 +19,8 @@ urlpatterns = [
     path("editar_cita/<int:cita_id>/", views.editar_cita, name="editar_cita"),
     path("eliminar_cita/<int:cita_id>/", views.eliminar_cita, name="eliminar_cita"),
     path('agenda-citas/', views.agenda_citas, name='agenda_citas'),
+    path('gestion_historia_clinica/', views.gestion_historia_clinica, name='gestion_historia_clinica'),
+    path('crear_historia_clinica/<int:customuser_id>/', views.crear_historia_clinica, name='crear_historia_clinica'),
+    path('modificar_historia_clinica/<int:historia_id>/', views.modificar_historia_clinica, name='modificar_historia_clinica'),
+    
 ]
