@@ -8,6 +8,10 @@ from django.contrib.auth import get_user_model
 from datetime import datetime, timedelta
 from django.db import IntegrityError
 from django.http import JsonResponse
+from .models import CustomUser, HistoriaClinica
+from .models import CustomUser
+from django.contrib import messages
+
 
 User = get_user_model()
 
@@ -314,3 +318,68 @@ def eliminar_cita(request, cita_id):
         return JsonResponse({"success": "Cita eliminada con éxito."})
     
     return JsonResponse({"error": "Método no permitido."}, status=405)
+
+
+
+#MODULO GESTION HISTORIA CLINICA
+
+@login_required
+def gestion_historia_clinica(request):
+    User = get_user_model()
+    
+    # Obtener pacientes (CustomUser con role='paciente')
+    pacientes = User.objects.filter(role='paciente').order_by('last_name', 'first_name')
+    
+    # Obtener historias clínicas existentes
+    historias = HistoriaClinica.objects.select_related('paciente').all()
+    
+    return render(request, 'funcionalidades/gestion_historia_clinica.html', {
+        'pacientes': pacientes,
+        'historias': historias
+    })
+
+@login_required
+def crear_historia_clinica(request, customuser_id):
+    paciente = get_object_or_404(CustomUser, id=customuser_id)
+    
+    if request.method == "POST":
+        try:
+            # Crear la historia clínica
+            historia = HistoriaClinica.objects.create(
+                paciente=paciente,
+                fecha=request.POST.get('fecha'),
+                avance_tratamiento=request.POST.get('tratamiento'),
+                duracion_tratamiento=request.POST.get('duracion')
+            )
+            
+            messages.success(request, "¡Historia clínica creada con éxito!")
+            # Pasamos el ID de la historia creada al template
+            return render(request, 'funcionalidades/crear_historia_clinica.html', {
+                'paciente': paciente,
+                'historia_id': historia.id  # <-- Aquí pasamos el ID
+            })
+            
+        except Exception as e:
+            messages.error(request, f"Error al crear historia clínica: {str(e)}")
+            return redirect('crear_historia_clinica', customuser_id=customuser_id)
+    
+    return render(request, 'funcionalidades/crear_historia_clinica.html', {
+        'paciente': paciente
+    })
+    
+@login_required
+def modificar_historia_clinica(request, historia_id):
+    historia = get_object_or_404(HistoriaClinica, id=historia_id)
+    
+    if request.method == "POST":
+        historia.fecha = request.POST.get('fecha')
+        historia.avance_tratamiento = request.POST.get('tratamiento')
+        historia.duracion_tratamiento = request.POST.get('duracion')
+        historia.save()
+        
+        messages.success(request, "Historia clínica actualizada correctamente")
+        return redirect('gestion_historia_clinica')
+    
+    return render(request, 'funcionalidades/modificar_historia_clinica.html', {
+        'historia': historia
+    })
