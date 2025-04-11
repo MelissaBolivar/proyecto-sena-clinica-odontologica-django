@@ -347,10 +347,10 @@ def crear_historia_clinica(request, customuser_id):
             # Crear la historia clínica
             historia = HistoriaClinica.objects.create(
                 paciente=paciente,
-                fecha=request.POST.get('fecha'),
-                avance_tratamiento=request.POST.get('tratamiento'),
+                fecha_inicio=request.POST.get('fecha'),
+                tratamiento=request.POST.get('tratamiento'),
                 duracion_tratamiento=request.POST.get('duracion')
-            )
+            )               
             
             messages.success(request, "¡Historia clínica creada con éxito!")
             # Pasamos el ID de la historia creada al template
@@ -370,16 +370,28 @@ def crear_historia_clinica(request, customuser_id):
 @login_required
 def modificar_historia_clinica(request, historia_id):
     historia = get_object_or_404(HistoriaClinica, id=historia_id)
-    
+
     if request.method == "POST":
-        historia.fecha = request.POST.get('fecha')
-        historia.avance_tratamiento = request.POST.get('tratamiento')
-        historia.duracion_tratamiento = request.POST.get('duracion')
+        # Obtener los datos del formulario
+        historia.fecha_inicio = request.POST.get('fecha_inicio')
+        historia.tratamiento = request.POST.get('tratamiento')
+        historia.duracion_tratamiento = request.POST.get('duracion_tratamiento')
+
+        # Solo capturar datos adicionales si los usas en otro modelo (esto es opcional)
+        avance = request.POST.get('avance_tratamiento')
+        medicamentos = request.POST.get('medicamentos')
+        fecha_consulta = request.POST.get('fecha_consulta')
+
+        # Guardar cambios en la historia clínica
         historia.save()
-        
-        messages.success(request, "Historia clínica actualizada correctamente")
+
+        # Opcional: guardar evolución en otro modelo si lo tienes (a futuro)
+
+        messages.success(request, "Historia clínica actualizada correctamente.")
         return redirect('gestion_historia_clinica')
-    
+
     return render(request, 'funcionalidades/modificar_historia_clinica.html', {
         'historia': historia
     })
+
+

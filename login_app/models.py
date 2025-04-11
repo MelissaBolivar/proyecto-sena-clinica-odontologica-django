@@ -37,10 +37,12 @@ class Cita(models.Model):
 class HistoriaClinica(models.Model):
     id = models.AutoField(primary_key=True) 
     paciente = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
-    fecha = models.DateField(auto_now_add=True)
-    avance_tratamiento = models.TextField()
+    fecha_inicio = models.DateField(auto_now_add=True)
+    tratamiento = models.TextField()
     duracion_tratamiento = models.CharField(max_length=100)
     creado_en = models.DateTimeField(auto_now_add=True)
     
     def __str__(self):
-        return f"Historia de {self.paciente.get_full_name()} - {self.fecha}"
+        return f"Historia de {self.paciente.get_full_name()} - {self.fecha_inicio}"
+    
+
