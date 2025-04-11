@@ -46,3 +46,12 @@ class HistoriaClinica(models.Model):
         return f"Historia de {self.paciente.get_full_name()} - {self.fecha_inicio}"
     
 
+class EvolucionClinica(models.Model):
+    historia = models.ForeignKey(HistoriaClinica, on_delete=models.CASCADE, related_name='evoluciones')
+    fecha_consulta = models.DateField()
+    avance_tratamiento = models.TextField()
+    medicamentos = models.TextField(blank=True, null=True)
+    creado_en = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Evolución del {self.fecha_consulta} - {self.historia.paciente.get_full_name()}"

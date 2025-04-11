@@ -11,6 +11,7 @@ from django.http import JsonResponse
 from .models import CustomUser, HistoriaClinica
 from .models import CustomUser
 from django.contrib import messages
+from .models import HistoriaClinica, EvolucionClinica
 
 
 User = get_user_model()
@@ -394,4 +395,38 @@ def modificar_historia_clinica(request, historia_id):
         'historia': historia
     })
 
+@login_required
+def modificar_historia_clinica(request, historia_id):
+    historia = get_object_or_404(HistoriaClinica, id=historia_id)
+
+    if request.method == "POST":
+        # Actualizar historia base
+        historia.fecha_inicio = request.POST.get('fecha_inicio')
+        historia.tratamiento = request.POST.get('tratamiento')
+        historia.duracion_tratamiento = request.POST.get('duracion_tratamiento')
+        historia.save()
+
+        # Guardar evolución solo si hay datos
+        fecha_consulta = request.POST.get('fecha_consulta')
+        avance = request.POST.get('avance_tratamiento')
+        medicamentos = request.POST.get('medicamentos')
+
+        if fecha_consulta and avance:
+            EvolucionClinica.objects.create(
+                historia=historia,
+                fecha_consulta=fecha_consulta,
+                avance_tratamiento=avance,
+                medicamentos=medicamentos
+            )
+
+        messages.success(request, "Historia clínica actualizada correctamente.")
+        return redirect('gestion_historia_clinica')
+
+    # Obtener todas las evoluciones relacionadas
+    evoluciones = historia.evoluciones.order_by('-fecha_consulta')
+
+    return render(request, 'funcionalidades/modificar_historia_clinica.html', {
+        'historia': historia,
+        'evoluciones': evoluciones
+    })
 

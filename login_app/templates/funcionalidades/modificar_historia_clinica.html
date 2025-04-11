@@ -103,5 +103,23 @@
         }, 5000);
     });
 </script>
+
+<!-- HISTORIAL DE EVOLUCIONES -->
+{% if evoluciones %}
+<div class="card mb-4">
+    <div class="card-header bg-info text-white"><strong>Historial de Evoluciones</strong></div>
+    <div class="card-body">
+        {% for evolucion in evoluciones %}
+            <div class="border-bottom mb-3 pb-2">
+                <p><strong>Fecha:</strong> {{ evolucion.fecha_consulta }}</p>
+                <p><strong>Avance:</strong> {{ evolucion.avance_tratamiento }}</p>
+                <p><strong>Medicamentos:</strong> {{ evolucion.medicamentos }}</p>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+
 </body>
 </html>
