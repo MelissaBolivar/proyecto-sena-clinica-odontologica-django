@@ -8,7 +8,7 @@ urlpatterns = [
     path("dashboard/auxiliar/", views.auxiliar_dashboard, name="auxiliar_dashboard"),
     path("gestion_pacientes/", views.gestion_pacientes, name="gestion_pacientes"),
     path("dashboard/dentista/", views.dentista_dashboard, name="dentista_dashboard"),
-    path("dashboard/paciente/", views.paciente_dashboard, name="paciente_dashboard"),
+    path("paciente/dashboard/", views.paciente_dashboard, name="paciente_dashboard"),
     path('gestion-usuarios/', views.gestion_usuarios, name='gestion_usuarios'),
     path('crear-usuario/', views.crear_usuario, name='crear_usuario'),
     path('editar-usuario/<int:user_id>/', views.editar_usuario, name="editar_usuario"),
@@ -24,6 +24,5 @@ urlpatterns = [
     path('modificar_historia_clinica/<int:historia_id>/', views.modificar_historia_clinica, name='modificar_historia_clinica'),
     path("paciente/mis-citas/", views.paciente_mis_citas, name="paciente_mis_citas"),
     path("paciente/mi-historia/", views.paciente_mi_historia, name="paciente_mi_historia"),
-    path("paciente/dashboard/", views.paciente_dashboard, name="paciente_dashboard"),
     path("paciente/", views.gestion_modulo_paciente, name="gestion_modulo_paciente"),
 ]

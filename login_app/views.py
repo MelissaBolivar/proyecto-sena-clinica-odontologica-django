@@ -70,7 +70,11 @@ def dentista_dashboard(request):
 
 @login_required
 def paciente_dashboard(request):
-    return render(request, 'login/paciente_dashboard.html', {'usuario': request.user}) 
+    citas = Cita.objects.filter(paciente=request.user).order_by('fecha', 'hora')
+    return render(request, 'login/paciente_dashboard.html', {
+        'usuario': request.user,
+        'citas': citas
+    })
 
 def logout_view(request):
     logout(request)
