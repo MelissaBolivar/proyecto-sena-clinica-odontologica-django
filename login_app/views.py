@@ -11,7 +11,8 @@ from django.http import JsonResponse
 from .models import CustomUser, HistoriaClinica
 from .models import CustomUser
 from django.contrib import messages
-from .models import HistoriaClinica, EvolucionClinica
+from .models import Cita, HistoriaClinica, EvolucionClinica
+from django.core.exceptions import PermissionDenied
 
 
 User = get_user_model()
@@ -430,3 +431,101 @@ def modificar_historia_clinica(request, historia_id):
         'evoluciones': evoluciones
     })
 
+
+# MODULO PARA PACIENTES
+@login_required
+def gestion_modulo_paciente(request):
+    """
+    Vista principal del módulo de paciente (reemplaza a paciente_dashboard)
+    """
+    if not hasattr(request.user, 'role') or request.user.role != 'paciente':
+        logout(request)
+        return redirect('login')
+    
+    try:
+        # Obtener próxima cita (la primera futura)
+        proxima_cita = Cita.objects.filter(
+            paciente=request.user,
+            fecha__gte=date.today()
+        ).select_related('dentista').order_by('fecha', 'hora').first()
+        
+        # Obtener la historia clínica con sus evoluciones
+        historia_clinica = HistoriaClinica.objects.filter(
+            paciente=request.user
+        ).prefetch_related('evoluciones').first()
+        
+        # Obtener citas recientes para el resumen (últimas 3)
+        citas_recientes = Cita.objects.filter(
+            paciente=request.user
+        ).select_related('dentista').order_by('-fecha', '-hora')[:3]
+        
+        return render(request, 'funcionalidades/gestion_modulo_paciente.html', {
+            'usuario': request.user,
+            'proxima_cita': proxima_cita,
+            'historia_clinica': historia_clinica,
+            'citas_recientes': citas_recientes
+        })
+        
+    except Exception as e:
+        # Loggear el error en producción
+        messages.error(request, "Error al cargar tu información")
+        return render(request, 'funcionalidades/gestion_modulo_paciente.html', {
+            'usuario': request.user
+        })
+
+@login_required
+def paciente_mis_citas(request):
+    """
+    Vista que muestra todas las citas del paciente
+    Redirige siempre al módulo principal al volver
+    """
+    if not hasattr(request.user, 'role') or request.user.role != 'paciente':
+        logout(request)
+        return redirect('login')
+    
+    try:
+        citas = Cita.objects.filter(
+            paciente=request.user
+        ).select_related('dentista').order_by('-fecha', '-hora')
+        
+        return render(request, 'funcionalidades/paciente_mis_citas.html', {
+            'usuario': request.user,
+            'citas': citas,
+            'total_citas': citas.count()
+        })
+        
+    except Exception as e:
+        messages.error(request, "Error al cargar tus citas")
+        return redirect('gestion_modulo_paciente')
+
+@login_required
+def paciente_mi_historia(request):
+    """
+    Vista que muestra la historia clínica completa del paciente
+    Redirige siempre al módulo principal al volver
+    """
+    if not hasattr(request.user, 'role') or request.user.role != 'paciente':
+        logout(request)
+        return redirect('login')
+    
+    try:
+        historia_clinica = HistoriaClinica.objects.filter(
+            paciente=request.user
+        ).prefetch_related('evoluciones').first()
+        
+        evoluciones = None
+        if historia_clinica:
+            evoluciones = historia_clinica.evoluciones.order_by('-fecha_consulta')
+        
+        return render(request, 'funcionalidades/paciente_mi_historia.html', {
+            'usuario': request.user,
+            'historia_clinica': historia_clinica,
+            'evoluciones': evoluciones,
+            'total_evoluciones': evoluciones.count() if evoluciones else 0
+        })
+        
+    except Exception as e:
+        messages.error(request, "Error al cargar tu historia clínica")
+        return redirect('gestion_modulo_paciente')
+    
+          

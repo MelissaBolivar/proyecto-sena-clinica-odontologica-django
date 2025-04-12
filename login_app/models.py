@@ -55,3 +55,7 @@ class EvolucionClinica(models.Model):
 
     def __str__(self):
         return f"Evolución del {self.fecha_consulta} - {self.historia.paciente.get_full_name()}"
+    
+    
+    
+    

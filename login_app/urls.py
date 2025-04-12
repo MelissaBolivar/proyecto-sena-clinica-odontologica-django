@@ -22,5 +22,8 @@ urlpatterns = [
     path('gestion_historia_clinica/', views.gestion_historia_clinica, name='gestion_historia_clinica'),
     path('crear_historia_clinica/<int:customuser_id>/', views.crear_historia_clinica, name='crear_historia_clinica'),
     path('modificar_historia_clinica/<int:historia_id>/', views.modificar_historia_clinica, name='modificar_historia_clinica'),
-    
+    path("paciente/mis-citas/", views.paciente_mis_citas, name="paciente_mis_citas"),
+    path("paciente/mi-historia/", views.paciente_mi_historia, name="paciente_mi_historia"),
+    path("paciente/dashboard/", views.paciente_dashboard, name="paciente_dashboard"),
+    path("paciente/", views.gestion_modulo_paciente, name="gestion_modulo_paciente"),
 ]
