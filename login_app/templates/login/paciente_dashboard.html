@@ -161,9 +161,15 @@
             <small class="text-muted">
                 <i class="far fa-calendar-check me-1"></i> Sistema de Gestión Odontológica
             </small>
-            <button class="btn btn-outline-danger btn-sm" onclick="confirmarLogout()">
-                <i class="fas fa-sign-out-alt me-1"></i> Cerrar sesión
-            </button>
+        <!-- Formulario oculto para cerrar sesión -->
+        <form id="logout-form" method="POST" action="{% url 'logout' %}" style="display: none;">
+        {% csrf_token %}
+        </form>
+
+        <!-- Botón visible para cerrar sesión -->
+        <button class="btn btn-outline-danger btn-sm" onclick="confirmarLogout()">
+            <i class="fas fa-sign-out-alt me-1"></i> Cerrar sesión
+        </button>
         </div>
     </div>
 

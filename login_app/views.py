@@ -3,7 +3,7 @@ from django.contrib.auth import authenticate, login, logout, get_user_model
 from django.contrib.auth.decorators import login_required
 from login_app.models import CustomUser
 from django.contrib.auth.hashers import make_password
-from .models import CustomUser, Cita
+from .models import CustomUser, Cita, EvolucionClinica
 from django.contrib.auth import get_user_model
 from datetime import datetime, timedelta
 from django.db import IntegrityError
@@ -70,10 +70,19 @@ def dentista_dashboard(request):
 
 @login_required
 def paciente_dashboard(request):
-    citas = Cita.objects.filter(paciente=request.user).order_by('fecha', 'hora')
+    paciente = request.user
+
+    citas = Cita.objects.filter(paciente=paciente).order_by('fecha', 'hora')
+
+    historia_clinica = HistoriaClinica.objects.filter(paciente=paciente).order_by('-fecha_inicio').first()
+
+    evoluciones = EvolucionClinica.objects.filter(historia__paciente=paciente).order_by('-fecha_consulta')[:5]
+
     return render(request, 'login/paciente_dashboard.html', {
-        'usuario': request.user,
-        'citas': citas
+        'usuario': paciente,
+        'citas': citas,
+        'historia_clinica': historia_clinica,
+        'evoluciones': evoluciones,
     })
 
 def logout_view(request):
